@@ -43,7 +43,7 @@ let wallOfFame = {
 };
 
 function getDevLvl(totalCommits){
-    return totalCommits/50;
+    return totalCommits/40000;
 }
 
 function createStatChart (htmlID, labels, datas, devLvl){
@@ -114,16 +114,16 @@ function setAvatar(id,url){
 
 function setDevLanguages(dev, languages){
     dev.languageT1 = languages[0].name;
-    dev.languageP1 = 12;
+    dev.languageP1 = languages[0].lines;
     dev.languageT2 = languages[1].name;
-    dev.languageP2 = 12;
+    dev.languageP2 = languages[1].lines;
     dev.languageT3 = languages[2].name;
-    dev.languageP3 = 12;
+    dev.languageP3 = languages[2].lines;
     dev.languageT4 = languages[3].name;
-    dev.languageP4 = 12;
+    dev.languageP4 = languages[3].lines;
     dev.languageT5 = languages[4].name;
-    dev.languageP5 = 12;
-    dev.live = 12;
+    dev.languageP5 = languages[4].lines;
+    dev.live = dev.languageP1 + dev.languageP2 + dev.languageP3 + dev.languageP4 + dev.languageP5;
 
 }
 
@@ -154,6 +154,7 @@ function fight(){
 }
 
 document.getElementById('fbutton').onclick = function(){
+    
     getUser(document.getElementById('nameDev1').value).then(user => {
         dev1.avatarurl = user.avatar_url;
         setAvatar('avatar1', dev1.avatarurl);
@@ -163,17 +164,22 @@ document.getElementById('fbutton').onclick = function(){
         dev2.avatarurl = user.avatar_url;
         setAvatar('avatar2', dev2.avatarurl);
     })
-    getBestLanguages('Nortalle').then(languages => {
+    getBestLanguages(document.getElementById('nameDev1').value).then(languages => {
         setDevLanguages (dev1,languages);
+        
+    }) 
+    getBestLanguages(document.getElementById('nameDev2').value).then(languages => {
+        setDevLanguages (dev2,languages);
+        
     }) 
 
-    dev1.live= 5000;
+    createStatChart("statChartDev1", getLanguageTable(dev1), getStatTable(dev1), getDevLvl(dev1.live));
+    createStatChart("statChartDev2",  getLanguageTable(dev2),  getStatTable(dev2), getDevLvl(dev2.live));
+    updateWOFDisplay (wallOfFame);
 }
 
 updateWOFDisplay (wallOfFame)
-createStatChart("statChartDev1", getLanguageTable(dev1), getStatTable(dev1), getDevLvl(dev1.live));
-createStatChart("statChartDev2",  getLanguageTable(dev2),  getStatTable(dev2), getDevLvl(dev2.live));
-updateWOFDisplay (wallOfFame);
+
 
 
 
